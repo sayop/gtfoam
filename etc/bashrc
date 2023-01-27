@@ -1,0 +1,104 @@
+#----------------------------------*-sh-*--------------------------------------
+# =========                 |
+# \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+#  \\    /   O peration     |
+#   \\  /    A nd           | Copyright (C) 2017 by Sayop Kim
+#    \\/     M anipulation  |
+#------------------------------------------------------------------------------
+# License
+#     This file is part of OpenFOAM.
+#
+#     OpenFOAM is free software: you can redistribute it and/or modify it
+#     under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     OpenFOAM is distributed in the hope that it will be useful, but WITHOUT
+#     ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+#     FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+#     for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
+#
+# File
+#     etc/bashrc
+#
+# Description
+#     Startup file for OpenFOAM
+#     Sourced from ~/.profile or ~/.bashrc
+#     Should be usable by any POSIX-compliant shell (eg, ksh)
+#
+#------------------------------------------------------------------------------
+
+export GT_PROJECT=GTFOAM
+export GT_PROJECT_VERSION=4.0.1
+
+# The old dirs to be cleaned from the various environment variables
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+foamOldDirs="$GT_APPBIN \
+             $GT_LIBBIN \
+            "
+
+# Source files, possibly with some verbosity
+_foamSource()
+{
+    while [ $# -ge 1 ]
+    do
+        [ "$FOAM_VERBOSE" -a "$PS1" ] && echo "Sourcing: $1" 1>&2
+        . $1
+       shift
+    done
+}
+
+# Location of GTFOAM installation
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+export GT_PROJECT_INST_DIR=$HOME/$WM_PROJECT
+export GT_PROJECT_DIR=$GT_PROJECT_INST_DIR/$GT_PROJECT-$GT_PROJECT_VERSION
+
+
+
+# Clean standard environment variables
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+foamClean=$WM_PROJECT_DIR/bin/foamCleanPath
+
+# Clean PATH
+# ~~~~~~~~~~
+cleaned=`$foamClean "$PATH" "$foamOldDirs"` && PATH="$cleaned"
+
+# Clean LD_LIBRARY_PATH
+# ~~~~~~~~~~~~~~~~~~~~~
+cleaned=`$foamClean "$LD_LIBRARY_PATH" "$foamOldDirs"` \
+    && LD_LIBRARY_PATH="$cleaned"
+
+export PATH LD_LIBRARY_PATH
+
+
+
+
+# Source project setup files
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~
+_foamSource $GT_PROJECT_DIR/etc/config/settings.sh
+
+
+
+
+
+# Clean environment paths again. Only remove duplicates
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#- Clean PATH
+cleaned=`$foamClean "$PATH"` && PATH="$cleaned"
+
+#- Clean LD_LIBRARY_PATH
+cleaned=`$foamClean "$LD_LIBRARY_PATH"` && LD_LIBRARY_PATH="$cleaned"
+
+export PATH LD_LIBRARY_PATH
+
+
+
+# cleanup environment:
+# ~~~~~~~~~~~~~~~~~~~~
+unset cleaned foamClean foamOldDirs
+unset _foamSource
+
+#------------------------------------------------------------------------------

@@ -1,0 +1,3 @@
+{
+    rho = thermo.rho();
+}

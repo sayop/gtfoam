@@ -1,0 +1,3 @@
+laminarDiffusionFlameletFoam.C
+
+EXE = $(GT_APPBIN)/laminarDiffusionFlameletFoam

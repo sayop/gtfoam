@@ -1,0 +1,3 @@
+refReactionFoam.C
+
+EXE = $(GT_APPBIN)/refReactionFoam

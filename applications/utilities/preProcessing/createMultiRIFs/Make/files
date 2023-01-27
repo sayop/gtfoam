@@ -1,0 +1,4 @@
+createMultiRIFs.C
+
+EXE = $(GT_APPBIN)/createMultiRIFs
+

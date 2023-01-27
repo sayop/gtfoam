@@ -1,0 +1,3 @@
+ecnSprayDyMFoam.C
+
+EXE = $(GT_APPBIN)/ecnSprayDyMFoam
